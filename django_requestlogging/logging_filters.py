@@ -84,15 +84,19 @@ class RequestFilter(object):
         # Basic
         record.request_method = getattr(request, 'method', '-')
         record.path_info = getattr(request, 'path_info', '-')
+
+        record.request_id = getattr(request, 'request_id', '-')
         # User
         user = getattr(request, 'user', None)
         if user and not user.is_anonymous():
-            record.username = user.username
+            record.user_id = user.id
         else:
-            record.username = '-'
+            record.user_id = '-'
         # Headers
         META = getattr(request, 'META', {})
-        record.remote_addr = META.get('REMOTE_ADDR', '-')
-        record.server_protocol = META.get('SERVER_PROTOCOL', '-')
-        record.http_user_agent = META.get('HTTP_USER_AGENT', '-')
+        # record.remote_addr = META.get('REMOTE_ADDR', '-')
+        # record.server_protocol = META.get('SERVER_PROTOCOL', '-')
+        # record.http_user_agent = META.get('HTTP_USER_AGENT', '-')
+        # Cloudflare Id
+        record.cf_id = META.get('HTTP_CF_RAY', '-')
         return True
